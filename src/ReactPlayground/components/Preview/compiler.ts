@@ -17,10 +17,10 @@ export const babelTransform = (filename: string, code: string, files: Files) => 
   let result = ''
   try {
       result = transform(_code, {
-      presets: ['react', 'typescript'],
-      filename,
-      plugins: [customResolver(files)],
-      retainLines: true
+        presets: ['react', 'typescript'],
+        filename,
+        plugins: [customResolver(files)],
+        retainLines: true
       }).code!
   } catch (e) {
       console.error('编译出错', e);

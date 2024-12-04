@@ -4,7 +4,13 @@ import Editor from "../CodeEditor/Editor";
 import { compile } from "./compiler";
 import iframeRaw from './iframe.html?raw'
 import { IMPORT_MAP_FILE_NAME } from "../../files";
-
+import { Message } from "../Message";
+interface MessageData {
+    data: {
+      type: string
+      message: string
+    }
+}
 export default function Preview() {
 
     const { files} = useContext(PlaygroundContext)
@@ -28,11 +34,23 @@ export default function Preview() {
         setCompiledCode(res);
     }, [files]);
 
-
+    const [error, setError] = useState('')
+    const handleMessage = (msg: MessageData) => {
+        const { type, message } = msg.data
+        if (type === 'ERROR') {
+          setError(message)
+        }
+    }
 
     useEffect(() => {
         setIframeUrl(getIframeUrl())
     }, [files[IMPORT_MAP_FILE_NAME].value, compiledCode]);
+    useEffect(() => {
+      window.addEventListener('message', handleMessage)
+      return () => {
+        window.removeEventListener('message', handleMessage)
+      }
+    }, [])
 
     return <div style={{height: '100%'}}>
         <iframe
@@ -44,6 +62,7 @@ export default function Preview() {
                 border: 'none',
             }}
         />
+         <Message type='error' content={error} />
         {/* <Editor file={{
             name: 'dist.js',
             value: compiledCode,

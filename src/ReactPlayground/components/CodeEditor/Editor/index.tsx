@@ -50,7 +50,8 @@ export default function Editor(props: Props) {
             scrollbar: {
               verticalScrollbarSize:6,
               horizontalScrollbarSize: 6
-            }
+            },
+            theme: options?.theme
           }
         }  
   />
